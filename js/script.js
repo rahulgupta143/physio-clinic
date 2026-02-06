@@ -40,21 +40,32 @@ form.addEventListener("submit", async (e) => {
   };
 
   try {
-    const res = await fetch("http://localhost:5000/api/appointments/book", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    });
+    // Backend API call
+    const res = await fetch(
+      "https://physio-clinic-backend-eydm.onrender.com/api/appointments/book",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      },
+    );
 
     const result = await res.json();
     msg.innerText = result.message || "Appointment Booked!";
     msg.style.color = "green";
     form.reset();
+
+    // ✅ WhatsApp professional message
+    const whatsappLink = `https://wa.me/919320539142?text=${encodeURIComponent(
+      `Hello Doctor, I would like to book a physiotherapy appointment. My name is ${data.name}, phone number is ${data.phone}, and problem is: ${data.problem || "Not specified"}. Please let me know the available slots.`,
+    )}`;
+    window.open(whatsappLink, "_blank");
   } catch (err) {
     msg.innerText = "Server Error. Try Again!";
     msg.style.color = "red";
   }
 });
+
 // STATS COUNTER
 const counters = document.querySelectorAll(".stat-box h2");
 
