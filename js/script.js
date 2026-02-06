@@ -1,19 +1,14 @@
-const form = document.getElementById("appointmentForm");
-const msg = document.getElementById("msg");
-
 document.addEventListener("DOMContentLoaded", () => {
+  // Burger Menu
   const burger = document.getElementById("burger");
   const navMenu = document.getElementById("navMenu");
   const closeMenu = document.getElementById("closeMenu");
 
   if (burger && navMenu && closeMenu) {
-    burger.addEventListener("click", () => {
-      navMenu.classList.add("active");
-    });
-
-    closeMenu.addEventListener("click", () => {
-      navMenu.classList.remove("active");
-    });
+    burger.addEventListener("click", () => navMenu.classList.add("active"));
+    closeMenu.addEventListener("click", () =>
+      navMenu.classList.remove("active"),
+    );
 
     document.addEventListener("click", (e) => {
       if (!navMenu.contains(e.target) && !burger.contains(e.target)) {
@@ -22,65 +17,63 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.querySelectorAll("#navMenu a").forEach((link) => {
-      link.addEventListener("click", () => {
-        navMenu.classList.remove("active");
-      });
+      link.addEventListener("click", () => navMenu.classList.remove("active"));
     });
   }
-});
 
-const form = document.getElementById("appointmentForm");
-const msg = document.getElementById("msg");
+  // Appointment Form
+  const form = document.getElementById("appointmentForm");
+  const msg = document.getElementById("msg");
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-  const data = {
-    name: document.getElementById("name").value,
-    phone: document.getElementById("phone").value,
-    problem: document.getElementById("problem").value,
-    date: document.getElementById("date").value,
-  };
+      const data = {
+        name: form.name.value,
+        phone: form.phone.value,
+        problem: form.problem.value,
+        date: form.date.value,
+      };
 
-  try {
-    const res = await fetch(
-      "https://physio-clinic-backend-eydm.onrender.com/api/appointments/book",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      },
-    );
+      try {
+        const res = await fetch(
+          "https://physio-clinic-backend-eydm.onrender.com/api/appointments/book",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          },
+        );
 
-    const result = await res.json();
-    if (res.status === 201) {
-      msg.textContent = result.message;
-      form.reset();
-    } else {
-      msg.textContent = result.error || "Failed to book appointment";
-    }
-  } catch (err) {
-    msg.textContent = "Server Error, Try again later";
-    console.error(err);
+        const result = await res.json();
+        if (res.ok) {
+          msg.innerText = result.message;
+          form.reset();
+        } else {
+          msg.innerText = result.error || "Failed to book appointment";
+        }
+      } catch (err) {
+        console.error(err);
+        msg.innerText = "Server error. Try again later.";
+      }
+    });
   }
-});
 
-// STATS COUNTER
-const counters = document.querySelectorAll(".stat-box h2");
-
-counters.forEach((counter) => {
-  const target = +counter.innerText.replace(/\D/g, "");
-  let count = 0;
-
-  const update = () => {
-    if (count < target) {
-      count += Math.ceil(target / 80);
-      counter.innerText = count + "+";
-      setTimeout(update, 30);
-    } else {
-      counter.innerText = target + "+";
-    }
-  };
-
-  update();
+  // Stats Counter
+  const counters = document.querySelectorAll(".stat-box h2");
+  counters.forEach((counter) => {
+    const target = +counter.innerText.replace(/\D/g, "");
+    let count = 0;
+    const update = () => {
+      if (count < target) {
+        count += Math.ceil(target / 80);
+        counter.innerText = count + "+";
+        setTimeout(update, 30);
+      } else {
+        counter.innerText = target + "+";
+      }
+    };
+    update();
+  });
 });

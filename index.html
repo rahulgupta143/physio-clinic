@@ -235,13 +235,26 @@
     <section id="appointment" class="appointment">
       <h2>Book Appointment</h2>
       <form id="appointmentForm">
-        <input type="text" id="name" placeholder="Full Name" required />
-        <input type="text" id="phone" placeholder="Phone Number" required />
-        <input type="text" id="problem" placeholder="Problem" />
-        <input id="date" type="date" required />
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Full Name"
+          required
+        />
+        <input
+          type="text"
+          id="phone"
+          name="phone"
+          placeholder="Phone Number"
+          required
+        />
+        <input type="text" id="problem" name="problem" placeholder="Problem" />
+        <input type="date" id="date" name="date" required />
         <button type="submit">Confirm Booking</button>
       </form>
       <p id="msg"></p>
+
       <a
         class="whatsapp"
         href="https://wa.me/918928080078?text=Hello%20Doctor,%20I%20would%20like%20to%20schedule%20a%20physiotherapy%20appointment.%20Could%20you%20please%20let%20me%20know%20your%20available%20time%20slots%3F"
