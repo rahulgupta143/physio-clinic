@@ -32,38 +32,25 @@ document.addEventListener("DOMContentLoaded", () => {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const data = {
-    name: document.getElementById("name").value.trim(),
-    phone: document.getElementById("phone").value.trim(),
-    problem: document.getElementById("problem").value.trim(),
-    date: document.getElementById("date").value,
-  };
-
-  try {
-    // Backend API call
-    const res = await fetch(
-      "https://physio-clinic-backend-eydm.onrender.com/api/appointments/book",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+  const response = await fetch(
+    "https://physio-clinic-backend-eydm.onrender.com/api/appointments/book",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        name: document.getElementById("name").value,
+        phone: document.getElementById("phone").value,
+        problem: document.getElementById("problem").value,
+        date: document.getElementById("date").value,
+      }),
+    },
+  );
 
-    const result = await res.json();
-    msg.innerText = result.message || "Appointment Booked!";
-    msg.style.color = "green";
-    form.reset();
-
-    // ✅ WhatsApp professional message
-    const whatsappLink = `https://wa.me/919320539142?text=${encodeURIComponent(
-      `Hello Doctor, I would like to book a physiotherapy appointment. My name is ${data.name}, phone number is ${data.phone}, and problem is: ${data.problem || "Not specified"}. Please let me know the available slots.`,
-    )}`;
-    window.open(whatsappLink, "_blank");
-  } catch (err) {
-    msg.innerText = "Server Error. Try Again!";
-    msg.style.color = "red";
-  }
+  const data = await response.json();
+  console.log(data);
+  alert(data.message || data.error);
 });
 
 // STATS COUNTER
