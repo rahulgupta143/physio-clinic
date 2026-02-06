@@ -29,34 +29,63 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+// Get form & inputs
+const appointmentForm = document.getElementById("appointmentForm");
+const nameInput = document.getElementById("name");
+const phoneInput = document.getElementById("phone");
+const problemInput = document.getElementById("problem");
+const dateInput = document.getElementById("date");
+const whatsappLink = document.getElementById("whatsappLink");
 
-  const response = await fetch(
-    "https://physio-clinic-backend-eydm.onrender.com/api/appointments/book",
-    {
+// Backend URL (Render)
+const BACKEND_URL =
+  "https://physio-clinic-backend-eydm.onrender.com/api/appointments/book";
+
+appointmentForm.addEventListener("submit", async (e) => {
+  e.preventDefault(); // Stop default form submission
+
+  const formData = {
+    name: nameInput.value.trim(),
+    phone: phoneInput.value.trim(),
+    problem: problemInput.value.trim(),
+    date: dateInput.value,
+  };
+
+  // 1️⃣ Save to backend (MongoDB via Render)
+  try {
+    const response = await fetch(BACKEND_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        body: JSON.stringify({
-          name: "Rahul Gupta",
-          phone: "9320539142",
-          problem: "Back Pain",
-          date: "2026-02-06",
-        }),
       },
-      body: JSON.stringify({
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        problem: document.getElementById("problem").value,
-        date: document.getElementById("date").value,
-      }),
-    },
-  );
+      body: JSON.stringify(formData),
+    });
 
-  const data = await response.json();
-  console.log(data);
-  alert(data.message || data.error);
+    const data = await response.json();
+
+    if (response.ok) {
+      msg.innerText = "✅ Appointment booked successfully!";
+      msg.style.color = "green";
+
+      // 2️⃣ Prepare WhatsApp message
+      const text = encodeURIComponent(
+        `Hello Doctor, my name is ${formData.name}. I want to book a physiotherapy appointment for ${formData.problem || "general consultation"} on ${formData.date}. Please let me know available slots.`,
+      );
+
+      whatsappLink.href = `https://wa.me/919320539142?text=${text}`;
+      whatsappLink.style.display = "inline-block";
+
+      // Optionally: reset form
+      appointmentForm.reset();
+    } else {
+      msg.innerText = "❌ Failed to book appointment. Try again!";
+      msg.style.color = "red";
+    }
+  } catch (error) {
+    console.error("Error booking appointment:", error);
+    msg.innerText = "❌ Something went wrong. Try again!";
+    msg.style.color = "red";
+  }
 });
 
 // STATS COUNTER
