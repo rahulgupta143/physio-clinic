@@ -38,6 +38,12 @@ form.addEventListener("submit", async (e) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        body: JSON.stringify({
+          name: "Rahul Gupta",
+          phone: "9320539142",
+          problem: "Back Pain",
+          date: "2026-02-06",
+        }),
       },
       body: JSON.stringify({
         name: document.getElementById("name").value,
